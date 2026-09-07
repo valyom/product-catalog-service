@@ -30,7 +30,10 @@ DEBUG = env.bool(
     default=False,
 )
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = env.list(
+    "DJANGO_ALLOWED_HOSTS",
+    default=[],
+)
 
 
 # Application definition
