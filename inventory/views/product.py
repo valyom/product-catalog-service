@@ -2,15 +2,31 @@ from rest_framework import generics, status
 from rest_framework.response import Response
 from decimal import Decimal, InvalidOperation
 
+from drf_spectacular.utils import (
+    extend_schema_view,
+)
 from rest_framework.exceptions import ValidationError 
+
 from inventory.pagination import ProductPagination
 from inventory.serializers.product import (
     ProductReadSerializer,
     ProductWriteSerializer,
 )
 from inventory.services.product_service import ProductService
+from inventory.api_docs.product import (
+    product_list_schema,
+    product_create_schema,
+    product_retrieve_schema,
+    product_update_schema,
+    product_partial_update_schema,
+    product_delete_schema
+)
 
 
+@extend_schema_view(
+    get=product_list_schema,
+    post=product_create_schema,
+)
 class ProductListCreateView(generics.ListCreateAPIView):
     ALLOWED_QUERY_PARAMS = {
         "title",
@@ -24,7 +40,7 @@ class ProductListCreateView(generics.ListCreateAPIView):
     
     serializer_class = ProductReadSerializer
     pagination_class = ProductPagination
-
+    
     def get_queryset(self):
         self._validate_query_params()
         
@@ -198,7 +214,12 @@ class ProductListCreateView(generics.ListCreateAPIView):
                 )
             )
 
-
+@extend_schema_view(
+    get=product_retrieve_schema,
+    put=product_update_schema,
+    patch=product_partial_update_schema,
+    delete=product_delete_schema,
+)
 class ProductDetailView(generics.RetrieveUpdateDestroyAPIView):
 
     def get_queryset(self):
