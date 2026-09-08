@@ -10,7 +10,10 @@ from inventory.api_docs.category import (
     category_partial_update_schema,
     category_delete_schema,
 )
-from inventory.exceptions import CategoryDeletionError
+from inventory.exceptions import (
+    CategoryDeletionError,
+    CategoryVersionConflictError,
+)
 from inventory.serializers.category import CategorySerializer
 from inventory.services.category_service import CategoryService
 
@@ -64,10 +67,17 @@ class CategoryDetailView(generics.RetrieveUpdateDestroyAPIView):
 
         serializer.is_valid(raise_exception=True)
 
-        category = CategoryService.update_category(
-            category,
-            **serializer.validated_data,
-        )
+        try:
+            category = CategoryService.update_category(
+                category,
+                **serializer.validated_data,
+            )
+
+        except CategoryVersionConflictError as exc:
+            return Response(
+                {"detail": str(exc)},
+                status=status.HTTP_409_CONFLICT,
+            )
 
         response_serializer = self.get_serializer(category)
 
@@ -78,6 +88,7 @@ class CategoryDetailView(generics.RetrieveUpdateDestroyAPIView):
 
         try:
             CategoryService.delete_category(category)
+
         except CategoryDeletionError as exc:
             return Response(
                 {"detail": str(exc)},
@@ -85,5 +96,5 @@ class CategoryDetailView(generics.RetrieveUpdateDestroyAPIView):
             )
 
         return Response(
-            status=status.HTTP_204_NO_CONTENT
+            status=status.HTTP_204_NO_CONTENT,
         )

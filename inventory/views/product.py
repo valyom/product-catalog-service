@@ -236,7 +236,6 @@ class ProductDetailView(generics.RetrieveUpdateDestroyAPIView):
 
         product = self.get_object()
 
-        # ProductWriteSerializer
         serializer = self.get_serializer(
             product,
             data=request.data,
@@ -244,9 +243,11 @@ class ProductDetailView(generics.RetrieveUpdateDestroyAPIView):
         )
 
         serializer.is_valid(raise_exception=True)
-
+        # The product may be deleted after serializer validation
+        # and before the service acquires the row lock.
+        # ProductService._locked_product() handles this with 404.
         product = ProductService.update_product(
-            product,
+            product_id=product.pk,
             **serializer.validated_data,
         )
 
@@ -255,9 +256,7 @@ class ProductDetailView(generics.RetrieveUpdateDestroyAPIView):
         return Response(response_serializer.data)
 
     def destroy(self, request, *args, **kwargs):
-        product = self.get_object()
-
-        ProductService.delete_product(product)
+        ProductService.delete_product(product_id=self.kwargs["pk"])
 
         return Response(
             status=status.HTTP_204_NO_CONTENT

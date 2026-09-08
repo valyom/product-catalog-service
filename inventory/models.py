@@ -15,8 +15,13 @@ class Category(models.Model):
         related_name="children",
     )
 
+    version = models.PositiveIntegerField(
+        default=1,
+    )
+        
     def __str__(self):
-        return self.name
+        return  f"{self.id} - {self.name}, {self.parent}, {self.version}"
+        
 
 
 class Product(models.Model):
