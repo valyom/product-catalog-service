@@ -2,9 +2,6 @@ import logging
 
 from contextlib import contextmanager
 from decimal import Decimal
-import os
-import threading
-
 from django.db import (
     IntegrityError,
     transaction,
@@ -82,7 +79,8 @@ class ProductService:
         product_id: int,
         **validated_data,
     ):
-
+        # Use a savepoint so IntegrityError can be handled without
+        # breaking the outer transaction created by _locked_product().
         with ProductService._locked_product(
             product_id
         ) as product:

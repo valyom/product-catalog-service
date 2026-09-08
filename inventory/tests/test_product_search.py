@@ -1,10 +1,10 @@
 from decimal import Decimal
-from unittest import skip
 
 from rest_framework import status
 from rest_framework.test import APITestCase
 
 from inventory.models import Category, Product
+
 
 class ProductSearchTests(APITestCase):
     #   Test Catalog Hierarchy:
@@ -667,7 +667,7 @@ class ProductSearchTests(APITestCase):
                 )
 
                 self.assertEqual(
-                    str(response.data["category_id"]),
+                    str(response.data["category_id"][0]),
                     expected_message,
                 )
 
@@ -698,7 +698,7 @@ class ProductSearchTests(APITestCase):
                 )
 
                 self.assertEqual(
-                    str(response.data[param]),
+                    str(response.data[param][0]),
                     "Must be a valid decimal number.",
                 )
     #---------------------------------------------------------------------------
@@ -723,7 +723,7 @@ class ProductSearchTests(APITestCase):
                 )
 
                 self.assertEqual(
-                    str(response.data[param]),
+                    str(response.data[param][0]),
                     "Must be greater than or equal to zero.",
                 )
     #---------------------------------------------------------------------------
@@ -746,7 +746,7 @@ class ProductSearchTests(APITestCase):
         )
 
         self.assertEqual(
-            str(response.data["price_range"]),
+            str(response.data["price_range"][0]),
             "price_min cannot be greater than price_max.",
         )
 
