@@ -3,7 +3,7 @@ services:
   db:
     image: postgres:17
 
-    container_name: ebag-product-catalog-db
+    container_name: product-catalog-db
 
     environment:
       POSTGRES_DB: ${DB_NAME}
@@ -14,7 +14,7 @@ services:
       - "${DB_PORT}:5432"
 
     volumes:
-      - ebag_product_catalog_postgres_data:/var/lib/postgresql/data
+      - product_catalog_postgres_data:/var/lib/postgresql/data
 
     healthcheck:
       test: [
@@ -28,7 +28,7 @@ services:
   web:
     build: .
 
-    container_name: ebag-product-catalog-web
+    container_name: product-catalog-web
 
     env_file:
       - .env
@@ -45,4 +45,4 @@ services:
         condition: service_healthy
 
 volumes:
-  ebag_product_catalog_postgres_data:
+  product_catalog_postgres_data:

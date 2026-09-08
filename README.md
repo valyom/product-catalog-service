@@ -128,6 +128,26 @@ To create a new migration:
 ```bash
 docker compose exec web python manage.py makemigrations
 ```
+---
+
+## Accessing PostgreSQL
+
+To open a PostgreSQL shell for running direct SQL queries:
+
+```bash
+docker compose exec -it db psql -U ebag -d product_catalog
+```
+Some useful commands to try in psql:
+
+```text
+\dt
+
+\d inventory_category
+
+\d inventory_product
+
+\q
+```
 
 ---
 
@@ -138,13 +158,29 @@ The project includes a management command that creates sample categories and pro
 The sample data includes:
 
 - hierarchical product categories
-- products used by the automated tests
+- example products
 - additional products for pagination testing
 
 Run:
 
 ```bash
 docker compose exec web python manage.py seed_data
+```
+
+---
+
+## Resetting the Database
+
+To remove all database data and start with a clean PostgreSQL volume:
+
+```bash
+docker compose down -v
+```
+
+Start the application again:
+
+```bash
+docker compose up --build
 ```
 
 ---
