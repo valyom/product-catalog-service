@@ -194,7 +194,7 @@ REST_FRAMEWORK = {
 }
 
 SPECTACULAR_SETTINGS = {
-    "TITLE": "eBag Product Catalog API",
+    "TITLE": "Product Catalog API",
     "DESCRIPTION": (
         "Product and category management API "
         "implemented with Django REST Framework."
