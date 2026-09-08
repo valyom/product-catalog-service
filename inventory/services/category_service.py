@@ -1,9 +1,7 @@
 import logging
 
 from django.db import transaction
-from django.db.models import F
 from django.db.models import F, ProtectedError
-from django.shortcuts import get_object_or_404
 from rest_framework.exceptions import ValidationError
 
 from inventory.exceptions import (
@@ -104,20 +102,21 @@ class CategoryService:
 
     @staticmethod
     @transaction.atomic
-    def delete_category(category_id: int) -> None:
+    def delete_category(category: Category) -> None:
+        """
+        Deletes a category.
 
-        category = get_object_or_404(
-            Category,
-            pk=category_id,
-        )
+        The deletion is rejected when the category is still referenced
+        by products or child categories.
+        """
 
+        category_id = category.pk
         category_name = category.name
 
         try:
             category.delete()
 
         except ProtectedError:
-
             logger.warning(
                 "Category deletion blocked: id=%s, name=%s",
                 category_id,

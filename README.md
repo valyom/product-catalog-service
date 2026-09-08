@@ -169,22 +169,6 @@ docker compose exec web python manage.py seed_data
 
 ---
 
-## Resetting the Database
-
-To remove all database data and start with a clean PostgreSQL volume:
-
-```bash
-docker compose down -v
-```
-
-Start the application again:
-
-```bash
-docker compose up --build
-```
-
----
-
 ## API Documentation
 
 OpenAPI documentation is available while the application is running.
