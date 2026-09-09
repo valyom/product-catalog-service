@@ -53,6 +53,10 @@ This works on:
 
 ### Prerequisites
 
+All Docker commands to be executed from the project root,
+where docker_compose.yml is located.
+
+
 Install:
 
 - Docker
@@ -69,7 +73,7 @@ docker compose version
 
 ## Configuration
 
-Copy the example environment file.
+Copy the example environment file and populate all fileds.
 
 ### Linux / macOS / WSL
 
@@ -304,8 +308,23 @@ The client can then reload the category and retry with the latest version.
 ---
 
 ## Running Tests
+Before running the tests, make sure that:
 
-Run all tests:
+- Docker and Docker Compose are installed.
+- The application containers have been built.
+- The required containers are running.
+
+See the sections [Prerequisites](#prerequisites), [Configuration](#configuration), and [Start the Application](#start-the-application) for setup instructions.
+
+### Run Tests in Docker
+
+Start and build the application containers from the project root:
+
+```bash
+docker compose up --build -d
+```
+
+Run all tests in the running `web` container:
 
 ```bash
 docker compose exec web python manage.py test
@@ -323,6 +342,23 @@ Run category concurrency tests:
 ```bash
 docker compose exec web python manage.py test \
     inventory.tests.test_category_concurrency
+```
+
+### Run Tests from `.venv`
+
+To run the product search tests using the local virtual environment, install the project dependencies and make sure that at least the PostgreSQL `db` service is running:
+
+```bash
+docker compose up db -d
+source .venv/bin/activate
+python manage.py test \
+    inventory.tests.test_product_search
+```
+
+On Windows PowerShell, activate the virtual environment with:
+
+```powershell
+.venv\Scripts\Activate.ps1
 ```
 
 ---
